@@ -1,0 +1,48 @@
+body {
+    background-color: #2c2c2c;
+    color: white;
+}
+.card {
+    background-color: #1c1c1c;
+    border: 1px solid #444;
+    text-align: center;
+}
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+h1, h2 {
+    font-family: 'Chalk', cursive;
+}
+.category-btn {
+    background-color: #1c1c1c;
+    color: white;
+    border: 1px solid #444;
+    margin: 5px;
+}
+.category-btn:hover, .category-btn.active {
+    background-color: #444;
+    color: white;
+}
+.card-title{
+    font-family: 'Chalk', cursive;
+    font-size: xx-large;
+}
+.card-text{
+    margin: 0;
+}
+.price {
+    font-weight: bold;
+    color: #ffc107;
+    font-size: xx-large;
+}
+.menu-container{
+    margin-bottom: 2rem;
+}
+#btn-back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    z-index: 999;
+}
