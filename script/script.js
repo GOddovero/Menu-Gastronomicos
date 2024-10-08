@@ -1,48 +1,48 @@
 const menuData = {
     "Café": [
-        {"nombre": "Ristretto", "descripcion": "25ml", "precio": 2500, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Espresso", "descripcion": "40ml", "precio": 2.50, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Lungo", "descripcion": "110ml", "precio": 3.00, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Latte", "descripcion": "110ml", "precio": 3.50, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Lágrima", "descripcion": "", "precio": 3.00, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Cortado", "descripcion": "", "precio": 3.00, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Café con leche", "descripcion": "", "precio": 3.50, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Café Benita", "descripcion": "", "precio": 4.00, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Café Helado", "descripcion": "", "precio": 4.00, "imagen": "/api/placeholder/300/200"}
+        { "nombre": "Ristretto", "descripcion": "Café corto", "tamaño": "25ml", "precio": 2500, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Espresso", "descripcion": "Café fuerte", "tamaño": "40ml", "precio": 2.50, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Lungo", "descripcion": "Café largo", "tamaño": "110ml", "precio": 3.00, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Latte", "descripcion": "Café con leche", "tamaño": "110ml", "precio": 3.50, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Lágrima", "descripcion": "Un toque de café con mucha leche", "tamaño": "200ml", "precio": 3.00, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Cortado", "descripcion": "Café con poca leche", "tamaño": "150ml", "precio": 3.00, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Café con leche", "descripcion": "Mezcla clásica de café con leche", "tamaño": "200ml", "precio": 3.50, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Café Benita", "descripcion": "Café con licor", "tamaño": "200ml", "precio": 4.00, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Café Helado", "descripcion": "Café frío", "tamaño": "300ml", "precio": 4.00, "imagen": "/api/placeholder/300/200" }
     ],
     "Sin Café": [
-        {"nombre": "Submarino", "descripcion": "", "precio": 4.50, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Chocolatada", "descripcion": "", "precio": 4.00, "imagen": "/api/placeholder/300/200"}
+        { "nombre": "Submarino", "descripcion": "Leche caliente con barra de chocolate", "tamaño": "250ml", "precio": 4.50, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Chocolatada", "descripcion": "Leche con chocolate", "tamaño": "250ml", "precio": 4.00, "imagen": "/api/placeholder/300/200" }
     ],
     "Té": [
-        {"nombre": "Té", "descripcion": "", "precio": 2.00, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Té con leche", "descripcion": "", "precio": 2.50, "imagen": "/api/placeholder/300/200"}
+        { "nombre": "Té", "descripcion": "Té clásico", "tamaño": "200ml", "precio": 2.00, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Té con leche", "descripcion": "Té con leche", "tamaño": "200ml", "precio": 2.50, "imagen": "/api/placeholder/300/200" }
     ],
     "Alfajores": [
-        {"nombre": "Blanco / Negro", "descripcion": "", "precio": 1.50, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Conito Dulce de Leche", "descripcion": "", "precio": 2.00, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Galletas bañadas en chocolate", "descripcion": "", "precio": 1.50, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Galletas con Arándanos", "descripcion": "", "precio": 1.75, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Galletas con Chips de Chocolate", "descripcion": "", "precio": 1.75, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Bombon Frutal", "descripcion": "", "precio": 2.00, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Estuche x 2 alfajores", "descripcion": "", "precio": 3.50, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Estuche Triologia 6 alfajores", "descripcion": "", "precio": 9.00, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Cordobés", "descripcion": "", "precio": 2.00, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "de Cacao", "descripcion": "", "precio": 1.75, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "de Coco", "descripcion": "", "precio": 1.75, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "de Merengue", "descripcion": "", "precio": 1.75, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "de Maicena", "descripcion": "", "precio": 1.50, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Conito de Dulce de Leche", "descripcion": "", "precio": 2.00, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Colacion", "descripcion": "", "precio": 1.50, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Nuez Confitada", "descripcion": "", "precio": 2.25, "imagen": "/api/placeholder/300/200"}
+        { "nombre": "Blanco / Negro", "descripcion": "Alfajor clásico de chocolate", "tamaño": "individual", "precio": 1.50, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Conito Dulce de Leche", "descripcion": "Cono relleno de dulce de leche", "tamaño": "individual", "precio": 2.00, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Galletas bañadas en chocolate", "descripcion": "Galletas cubiertas de chocolate", "tamaño": "paquete", "precio": 1.50, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Galletas con Arándanos", "descripcion": "Galletas con trozos de arándanos", "tamaño": "paquete", "precio": 1.75, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Galletas con Chips de Chocolate", "descripcion": "Galletas con chips de chocolate", "tamaño": "paquete", "precio": 1.75, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Bombon Frutal", "descripcion": "Bombón relleno de frutas", "tamaño": "individual", "precio": 2.00, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Estuche x 2 alfajores", "descripcion": "Caja con dos alfajores", "tamaño": "estuche", "precio": 3.50, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Estuche Triologia 6 alfajores", "descripcion": "Caja con seis alfajores", "tamaño": "estuche", "precio": 9.00, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Cordobés", "descripcion": "Alfajor típico de Córdoba", "tamaño": "individual", "precio": 2.00, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "de Cacao", "descripcion": "Alfajor de cacao", "tamaño": "individual", "precio": 1.75, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "de Coco", "descripcion": "Alfajor de coco", "tamaño": "individual", "precio": 1.75, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "de Merengue", "descripcion": "Alfajor cubierto de merengue", "tamaño": "individual", "precio": 1.75, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "de Maicena", "descripcion": "Alfajor de maicena", "tamaño": "individual", "precio": 1.50, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Conito de Dulce de Leche", "descripcion": "Conito relleno de dulce de leche", "tamaño": "individual", "precio": 2.00, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Colacion", "descripcion": "Alfajor típico", "tamaño": "individual", "precio": 1.50, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Nuez Confitada", "descripcion": "Alfajor con nueces confitadas", "tamaño": "individual", "precio": 2.25, "imagen": "/api/placeholder/300/200" }
     ],
     "Dulces Caseros": [
-        {"nombre": "Cookies vainilla con chips", "descripcion": "", "precio": 2.00, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Cookies chocolate con nuez", "descripcion": "", "precio": 2.25, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Palmeritas", "descripcion": "", "precio": 1.75, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Alfajorcitos de Maicena", "descripcion": "", "precio": 2.00, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Medialunas", "descripcion": "", "precio": 1.50, "imagen": "/api/placeholder/300/200"},
-        {"nombre": "Criollos", "descripcion": "", "precio": 1.50, "imagen": "/api/placeholder/300/200"}
+        { "nombre": "Cookies vainilla con chips", "descripcion": "Galletas de vainilla con chips", "tamaño": "paquete", "precio": 2.00, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Cookies chocolate con nuez", "descripcion": "Galletas de chocolate y nuez", "tamaño": "paquete", "precio": 2.25, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Palmeritas", "descripcion": "Palmeritas de hojaldre", "tamaño": "paquete", "precio": 1.75, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Alfajorcitos de Maicena", "descripcion": "Pequeños alfajores de maicena", "tamaño": "individual", "precio": 2.00, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Medialunas", "descripcion": "Medialunas dulces", "tamaño": "unidad", "precio": 1.50, "imagen": "/api/placeholder/300/200" },
+        { "nombre": "Criollos", "descripcion": "Criollos salados", "tamaño": "unidad", "precio": 1.50, "imagen": "/api/placeholder/300/200" }
     ]
 };
 
@@ -84,6 +84,7 @@ function cargarMenu(categoria) {
                     <div class="card-body">
                         <h5 class="card-title">${item.nombre}</h5>
                         <p class="card-text">${item.descripcion}</p>
+                        <p class="card-text">${item.tamaño}</p>
                         <p class="card-text price">$${item.precio}</p>
                     </div>
                 </div>
@@ -104,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 let mybutton = document.getElementById("btn-back-to-top");
 
 // Cuando el usuario se desplaza 20px desde la parte superior del documento, mostrar el botón
-window.onscroll = function() {scrollFunction()};
+window.onscroll = function () { scrollFunction() };
 
 function scrollFunction() {
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
