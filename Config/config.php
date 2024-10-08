@@ -1,5 +1,5 @@
 <?php
-define("DEVELOPER", false);
+define("DEVELOPER", true);
 // BASE DE DATOS
 if (DEVELOPER) {
 	define("DB_HOST", "localhost");
