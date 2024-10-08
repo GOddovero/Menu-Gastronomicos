@@ -56,7 +56,12 @@ function cargarMenu(categoria, menuData) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const response = await fetch(`getMenuData.php?empresaid=${empresaid}`);
+    console.log("empresaid:", empresaid);
+
+    const response = await fetch(
+      `./getMenuData.php?empresaid=${empresaid}`
+      //   `https://qrsurcba.online/menu/getMenuData.php?empresaid=${empresaid}`
+    );
     const menuData = await response.json();
     console.log(menuData);
 

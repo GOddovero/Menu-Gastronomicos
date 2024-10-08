@@ -1,6 +1,9 @@
 <?php
-define("DEVELOPER", true);
-// BASE DE DATOS
+if ($_SERVER['HTTP_HOST'] == 'localhost') {
+	define("DEVELOPER", true);
+} else {
+	define("DEVELOPER", false);
+}
 if (DEVELOPER) {
 	define("DB_HOST", "localhost");
 	define("DB_NAME", "qr_menu");

@@ -1,11 +1,10 @@
 <?php
-require_once("Config/config.php");
-require_once("BD/database.php");
+require_once("./Config/config.php");
+require_once("./BD/Database.php");
 
 use BD\Database;
 
 
-// Capturar el parámetro 'empresaid' de la URL
 $empresaid = isset($_GET['empresaid']) ? $_GET['empresaid'] : '';
 if ($empresaid) {
 	$database = new Database();
