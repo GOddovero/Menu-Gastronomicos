@@ -1,5 +1,7 @@
 <?php
-if ($_SERVER['HTTP_HOST'] == 'localhost') {
+if (
+	$_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['HTTP_HOST'] == 'localhost:5500'
+) {
 	define("DEVELOPER", true);
 } else {
 	define("DEVELOPER", false);
