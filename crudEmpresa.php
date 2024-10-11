@@ -1,5 +1,5 @@
 <?php
-function editarEmpresa($db)
+function editarEmpresa($db, $empresa)
 {
 	try {
 		$id = $_POST['id'];
@@ -69,7 +69,7 @@ function editarEmpresa($db)
 
 		// Si se ha subido un nuevo archivo, guardarlo en el servidor y actualizar el path_logo
 		if ($logo && $logo['error'] == UPLOAD_ERR_OK) {
-			$target_dir = "img/";
+			$target_dir = "img/" . $empresa['carpeta_graficos'] . "/";
 			$target_file = $target_dir . basename($logo["name"]);
 
 			if (move_uploaded_file($logo["tmp_name"], $target_file)) {

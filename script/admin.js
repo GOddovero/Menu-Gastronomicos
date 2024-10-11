@@ -3,6 +3,26 @@ document.addEventListener("DOMContentLoaded", function () {
   const addEmpresaForm = document.getElementById("addEmpresaForm");
   const editEmpresaForm = document.getElementById("editEmpresaForm");
 
+  // Restaurar la pestaña activa desde localStorage
+  const activeTab = localStorage.getItem("activeTab");
+  if (activeTab) {
+    const tab = document.querySelector(
+      `#myTab button[data-bs-target="${activeTab}"]`
+    );
+    if (tab) {
+      const tabInstance = new bootstrap.Tab(tab);
+      tabInstance.show();
+    }
+  }
+  // Guardar la pestaña activa en localStorage
+  document
+    .querySelectorAll('#myTab button[data-bs-toggle="tab"]')
+    .forEach((tab) => {
+      tab.addEventListener("shown.bs.tab", function (event) {
+        const target = event.target.getAttribute("data-bs-target");
+        localStorage.setItem("activeTab", target);
+      });
+    });
   function validateForm(form) {
     const descripcion = form.querySelector('[name="empresa_descripcion"]');
     if (descripcion.value.trim() === "") {
@@ -60,83 +80,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("editEmpresaModal")
       );
       editModal.show();
-    });
-  });
-});
-document.querySelectorAll(".edit-categoria").forEach((button) => {
-  button.addEventListener("click", function () {
-    const id = this.dataset.id;
-    const empresaid = this.dataset.empresaid;
-    const descripcion = this.dataset.descripcion;
-
-    document.getElementById("edit-categoria-id").value = id;
-    document.getElementById("edit-categoria-empresaid").value = empresaid;
-    document.getElementById("categoria-descripcion").value = descripcion;
-  });
-});
-function clearCategoriaForm() {
-  document.getElementById("edit-categoria-id").value = "";
-  document.getElementById("edit-categoria-empresaid").value = "";
-  document.getElementById("categoria-descripcion").value = "";
-}
-
-document.querySelectorAll(".delete-categoria").forEach((button) => {
-  button.addEventListener("click", function () {
-    const id = this.dataset.id;
-    const empresaid = this.dataset.empresaid;
-    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
-
-    Swal.fire({
-      title: "¿Estás seguro?",
-      text: "¡No podrás revertir esto!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminarlo!",
-      cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Realizar la solicitud de eliminación
-        fetch("administrame.php", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({
-            delete_categoria: true,
-            id: id,
-            empresaid: empresaid,
-            csrf_token: csrfToken,
-          }),
-        })
-          .then((response) => response.text())
-          .then((data) => {
-            if (data.includes("Categoría eliminada exitosamente")) {
-              Swal.fire(
-                "Eliminado!",
-                "La categoría ha sido eliminada.",
-                "success"
-              ).then(() => {
-                location.reload(); // Recargar la página para reflejar los cambios
-              });
-            } else {
-              Swal.fire(
-                "Error!",
-                "Hubo un problema al eliminar la categoría.",
-                "error"
-              );
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            Swal.fire(
-              "Error!",
-              "Hubo un problema al eliminar la categoría.",
-              "error"
-            );
-          });
-      }
     });
   });
 });

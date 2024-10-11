@@ -6,7 +6,7 @@ function insert_update_Categoria($db)
 		$id = $_POST['id'];
 		$descripcion = trim($_POST['descripcion']);
 		$empresaid = isset($_SESSION['empresaid']) ? $_SESSION['empresaid'] : null;
-
+		$icono		=		trim($_POST['icono']);
 
 		if (empty($descripcion)) {
 			$_SESSION['error'] = "La descripción no puede estar vacía.";
@@ -22,15 +22,17 @@ function insert_update_Categoria($db)
 		}
 
 		if ($id > 0):
-			$sql = "UPDATE categorias SET descripcion = :descripcion  WHERE id = :id";
+			$sql = "UPDATE categorias SET descripcion = :descripcion , icono = :icono WHERE id = :id";
 			$stmt = $db->prepare($sql);
 			$stmt->bindparam(":descripcion", $descripcion);
+			$stmt->bindparam(":icono", $icono);
 			$stmt->bindparam(":id", $id);
 		else:
-			$sql = "INSERT INTO categorias (descripcion,empresaid)
-					VALUES(:descripcion ,:empresaid)";
+			$sql = "INSERT INTO categorias (descripcion,icono,empresaid)
+					VALUES(:descripcion ,:icono,:empresaid)";
 			$stmt = $db->prepare($sql);
 			$stmt->bindparam(":descripcion", $descripcion);
+			$stmt->bindparam(":icono", $icono);
 			$stmt->bindparam(":empresaid", $empresaid);
 		endif;
 		if ($stmt->execute()) {
@@ -46,7 +48,20 @@ function eliminarCategoria($db)
 {
 	try {
 		$id = $_POST['id'];
-		$empresaid = $_POST['empresaid'];
+		$empresaid = isset($_SESSION['empresaid']) ? $_SESSION['empresaid'] : null;
+
+		// Verificar si la categoría está siendo utilizada en la tabla productos
+		$sql_check = "SELECT COUNT(*) FROM menu WHERE categoria_id = :id AND empresaid = :empresaid";
+		$stmt_check = $db->prepare($sql_check);
+		$stmt_check->bindParam(":id", $id);
+		$stmt_check->bindParam(":empresaid", $empresaid);
+		$stmt_check->execute();
+		$count = $stmt_check->fetchColumn();
+
+		if ($count > 0) {
+			$_SESSION['error'] = "No se puede eliminar la categoría porque está siendo utilizada en productos.";
+			return;
+		}
 
 		$sql = "DELETE FROM categorias WHERE id = :id AND empresaid = :empresaid";
 		$stmt = $db->prepare($sql);
@@ -68,7 +83,7 @@ function mostrarDataCategorias($categorias)
 ?>
 <class="card mt-3">
 	<div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-		<h5 class="card-title mb-0">Categorías</h5>
+		<h5 class="card-title mb-0"></h5>
 		<button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#editCategoriaModal" onclick="clearCategoriaForm()">Agregar Categoría</button>
 	</div>
 	<div class="card-body">
@@ -76,6 +91,7 @@ function mostrarDataCategorias($categorias)
 			<thead>
 				<tr>
 					<th>Descripción</th>
+					<th>Icono</th>
 					<th>Acciones</th>
 				</tr>
 			</thead>
@@ -84,7 +100,19 @@ function mostrarDataCategorias($categorias)
 				<tr>
 					<td><?php echo htmlspecialchars($categoria['descripcion']); ?></td>
 					<td>
-						<button class="btn btn-sm btn-primary edit-categoria" data-id="<?php echo $categoria['id']; ?>" data-empresaid="<?php echo $categoria['empresaid']; ?>" data-descripcion="<?php echo htmlspecialchars($categoria['descripcion']); ?>" data-bs-toggle="modal" data-bs-target="#editCategoriaModal">
+						<?php
+								// Verifica si el icono empieza con 'fa' para saber si es de FontAwesome
+								if (strpos($categoria['icono'], 'fa') === 0) {
+									// Es un icono de FontAwesome
+									echo '<i class="' . htmlspecialchars($categoria['icono']) . '" style="font-size: 24px;"></i>';
+								} else {
+									// Es un icono de Bootstrap Icons
+									echo '<i class="bi ' . htmlspecialchars($categoria['icono']) . '" style="font-size: 24px;"></i>';
+								}
+								?>
+					</td>
+					<td>
+						<button class="btn btn-sm btn-primary edit-categoria" data-id="<?php echo $categoria['id']; ?>" data-empresaid="<?php echo $categoria['empresaid']; ?>" data-descripcion="<?php echo htmlspecialchars($categoria['descripcion']); ?>" data-icono="<?php echo htmlspecialchars($categoria['icono']); ?>" data-bs-toggle="modal" data-bs-target="#editCategoriaModal">
 							Editar <i class="bi bi-pencil"></i>
 						</button>
 						<button class="btn btn-sm btn-danger delete-categoria" data-id="<?php echo $categoria['id']; ?>" data-empresaid="<?php echo $categoria['empresaid']; ?>">
@@ -96,6 +124,97 @@ function mostrarDataCategorias($categorias)
 			</tbody>
 		</table>
 	</div>
+	<script>
+	$(document).ready(function() {
+		const data = <?php echo json_encode($categorias); ?>; // Asegúrate de definir tu variable `data` con los datos necesarios
+		const columns = [{
+				data: 'descripcion',
+				title: 'Descripción'
+			},
+			{
+				data: null,
+				title: 'Acciones',
+				orderable: false,
+				searchable: false,
+				render: function(data, type, row) {
+					return `
+                        <button class="btn btn-sm btn-primary edit-categoria" data-id="${row.id}" data-empresaid="${row.empresaid}" data-descripcion="${row.descripcion}" data-icono="${row.icono}" data-bs-toggle="modal" data-bs-target="#editCategoriaModal">
+                            Editar <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-categoria" data-id="${row.id}" data-empresaid="${row.empresaid}">
+                            Eliminar <i class="bi bi-trash"></i>
+                        </button>
+                    `;
+				}
+			}
+		];
+
+		const tableOptions = {
+			destroy: true,
+			data: data,
+			responsive: {
+				details: {
+					type: "column",
+					target: -1,
+				},
+			},
+			language: {
+				url: "https://cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json",
+			},
+			autoWidth: false,
+			scroller: true,
+			scrollX: true,
+			scrollY: "50vh",
+			dom: "Bfrtip",
+			buttons: [{
+					extend: "copy",
+					text: "Copiar",
+					exportOptions: {
+						columns: ":not(:last-child)",
+					},
+				},
+				{
+					extend: "csv",
+					text: "CSV",
+					exportOptions: {
+						columns: ":not(:last-child)",
+					},
+					charset: "utf-8",
+					bom: true,
+				},
+				{
+					extend: "excel",
+					text: "Excel",
+					exportOptions: {
+						columns: ":not(:last-child)",
+					},
+				},
+				{
+					extend: "pdf",
+					text: "PDF",
+					exportOptions: {
+						columns: ":not(:last-child)",
+					},
+				},
+				{
+					extend: "print",
+					text: "Imprimir",
+					exportOptions: {
+						columns: ":not(:last-child)",
+					},
+				},
+			],
+			order: [
+				[0, "desc"]
+			],
+			columns: columns,
+		};
+
+		const table = $("#categorias-table").DataTable(tableOptions);
+
+
+	});
+	</script>
 	</class=>
 	<?php
 }

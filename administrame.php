@@ -59,6 +59,14 @@ if (!$categorias):
 	$categorias = [];
 endif;
 
+// Obtener los productos
+$query = "SELECT p.id, p.categoria_id, p.nombre, p.descripcion, p.tamaño, p.precio, p.path_imagen, c.descripcion AS categoria
+          FROM menu p
+          JOIN categorias c ON p.categoria_id = c.id
+          WHERE p.empresaid = ?";
+$stmt = $db->prepare($query);
+$stmt->execute([$_SESSION['empresaid']]);
+$productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Procesar formularios
@@ -70,13 +78,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 	#edicion Empresa
 	if (isset($_POST['edit_empresa'])) {
-		editarEmpresa($db);
+		editarEmpresa($db, $empresa);
 	}
 	if (isset($_POST['edit_categoria'])) {
 		insert_update_Categoria($db);
 	}
 	if (isset($_POST['delete_categoria'])) {
 		eliminarCategoria($db);
+	}
+	if (isset($_POST['edit_producto'])) {
+		insert_update_productos($db, $empresa);
+	}
+	if (isset($_POST['delete_producto'])) {
+		eliminarProducto($db);
 	}
 	header("Location: " . $_SERVER['PHP_SELF']);
 	exit();
@@ -92,6 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Administración de la Empresa, Categorías y Productos</title>
+	<meta name="csrf-token" content="<?php echo $_SESSION['csrf_token']; ?>">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -113,6 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.18/b-1.5.6/b-html5-1.5.6/b-print-1.5.6/datatables.min.js"></script>
 	<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 </head>
 
@@ -161,7 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			<div class="tab-pane fade show active" id="empresas">
 				<div class="card mt-3">
 					<div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-						<h5 class="card-title mb-0">Dato Empresa</h5>
+						<h5 class="card-title mb-0">Empresa</h5>
 					</div>
 					<?php mostrarDataEmpresa($empresa); ?>
 				</div>
@@ -172,7 +188,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			<div class="tab-pane fade" id="categorias">
 				<div class="card mt-3">
 					<div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-						<h5 class="card-title mb-0">Administración Categorías</h5>
+						<h5 class="card-title mb-0">Categorías</h5>
 					</div>
 					<?php mostrarDataCategorias($categorias); ?>
 				</div>
@@ -184,9 +200,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			<div class="tab-pane fade" id="productos">
 				<div class="card mt-3">
 					<div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
-						<h5 class="card-title mb-0">Dato Producto</h5>
+						<h5 class="card-title mb-0">Productos</h5>
 					</div>
-					<?php mostrarDataProductos($producto); ?>
+					<?php mostrarDataProductos($productos, $categorias); ?>
 				</div>
 			</div>
 			<!-- Formulario de edición de Producto -->
@@ -195,96 +211,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="script/admin.js"></script>
-
+		<script src="script/categoria.js"></script>
+		<script src="script/producto.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 		<script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
-		<script>
-		// const data = []; // Asegúrate de definir tu variable `data` con los datos necesarios
-		const columns = [{
-				data: "descripcion",
-				title: "Descripción"
-			},
-			{
-				data: null,
-				title: "Acciones",
-				orderable: false,
-				searchable: false,
-				render: function(data, type, row) {
-					return `
-          <button class="btn btn-sm btn-primary edit-categoria" data-id="${row.id}" data-empresaid="${row.empresaid}" data-descripcion="${row.descripcion}" data-bs-toggle="modal" data-bs-target="#editCategoriaModal">
-            Editar <i class="bi bi-pencil"></i>
-          </button>
-          <button class="btn btn-sm btn-danger delete-categoria" data-id="${row.id}" data-empresaid="${row.empresaid}">
-            Eliminar <i class="bi bi-trash"></i>
-          </button>
-        `;
-				},
-			},
-		];
 
-		const tableOptions = {
-			destroy: true,
-			// data: data,
-			responsive: {
-				details: {
-					type: "column",
-					target: -1,
-				},
-			},
-			language: {
-				url: "https://cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json",
-			},
-			autoWidth: false,
-			scroller: true,
-			scrollX: true,
-			scrollY: "50vh",
-			dom: "Bfrtip",
-			buttons: [{
-					extend: "copy",
-					text: "Copiar",
-					exportOptions: {
-						columns: ":not(:last-child)",
-					},
-				},
-				{
-					extend: "csv",
-					text: "CSV",
-					exportOptions: {
-						columns: ":not(:last-child)",
-					},
-					charset: "utf-8",
-					bom: true,
-				},
-				{
-					extend: "excel",
-					text: "Excel",
-					exportOptions: {
-						columns: ":not(:last-child)",
-					},
-				},
-				{
-					extend: "pdf",
-					text: "PDF",
-					exportOptions: {
-						columns: ":not(:last-child)",
-					},
-				},
-				{
-					extend: "print",
-					text: "Imprimir",
-					exportOptions: {
-						columns: ":not(:last-child)",
-					},
-				},
-			],
-			order: [
-				[0, "desc"]
-			],
-			columns: columns,
-		};
-
-		$("#categorias-table").DataTable(tableOptions);
-		</script>
 </body>
 <?php
