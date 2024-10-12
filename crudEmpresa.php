@@ -1,4 +1,16 @@
 <?php
+function getEmpresa($db, $codigo)
+{
+	try {
+		$query = "SELECT * FROM empresa WHERE codigo = ?";
+		$stmt = $db->prepare($query);
+		$stmt->execute([$codigo]);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	} catch (PDOException $e) {
+		header('Location: error.php');
+		exit;
+	}
+}
 function editarEmpresa($db, $empresa)
 {
 	try {
@@ -12,7 +24,7 @@ function editarEmpresa($db, $empresa)
 		$facebook = trim($_POST['facebook']);
 		$pagina_web = trim($_POST['pagina_web']);
 		$logo = isset($_FILES['logo']) ? $_FILES['logo'] : null;
-
+		$estilo_id = $_POST['estilo_id'];
 		if (empty($descripcion)) {
 			$_SESSION['error'] = "La descripción no puede estar vacía.";
 			return;
@@ -49,7 +61,7 @@ function editarEmpresa($db, $empresa)
 
 
 		// Actualizar la descripción y otros campos en la base de datos
-		$sql = "UPDATE empresa SET descripcion = :descripcion, contacto = :contacto, email = :email, direccion = :direccion, whatssap = :whatsapp, instagram = :instagram, facebook = :facebook, pagina_web = :pagina_web WHERE id = :id";
+		$sql = "UPDATE empresa SET descripcion = :descripcion, contacto = :contacto, email = :email, direccion = :direccion, whatssap = :whatsapp, instagram = :instagram, facebook = :facebook, pagina_web = :pagina_web, estilo_id = :estilo_id  WHERE id = :id";
 		$stmt = $db->prepare($sql);
 		$stmt->bindparam(":descripcion", $descripcion);
 		$stmt->bindparam(":contacto", $contacto);
@@ -59,6 +71,7 @@ function editarEmpresa($db, $empresa)
 		$stmt->bindparam(":instagram", $instagram);
 		$stmt->bindparam(":facebook", $facebook);
 		$stmt->bindparam(":pagina_web", $pagina_web);
+		$stmt->bindparam(":estilo_id", $estilo_id);
 		$stmt->bindparam(":id", $id);
 
 		if ($stmt->execute()) {
@@ -89,14 +102,16 @@ function editarEmpresa($db, $empresa)
 }
 
 
-function mostrarDataEmpresa($empresa)
+function mostrarDataEmpresa($empresa, $estilos)
 {
+
 ?>
 <div class="card-body">
 	<div class="empresa-info">
 		<div class="empresa-item">
 			<strong>Descripción:</strong> <?php echo $empresa['descripcion']; ?> <i class="bi bi-pencil"></i>
 		</div>
+
 		<div class="empresa-item">
 			<strong>Activo:</strong> <?php echo $empresa['activo'] ? 'Sí' : 'No'; ?> <i class="bi bi-check-circle"></i>
 		</div>
@@ -110,32 +125,34 @@ function mostrarDataEmpresa($empresa)
 			<strong>Dirección:</strong> <?php echo $empresa['direccion']; ?> <i class="bi bi-geo-alt"></i>
 		</div>
 		<div class="empresa-item">
-			<strong>Whatsapp:</strong> <?php echo $empresa['whatssap']; ?> <i class="bi bi-whatsapp"></i>
-		</div>
-		<div class="empresa-item">
-			<strong>Instagram:</strong> <?php echo $empresa['instagram']; ?> <i class="bi bi-instagram"></i>
-		</div>
-		<div class="empresa-item">
-			<strong>Facebook:</strong> <?php echo $empresa['facebook']; ?> <i class="bi bi-facebook"></i>
-		</div>
-		<div class="empresa-item">
-			<strong>Página Web:</strong> <?php echo $empresa['pagina_web']; ?> <i class="bi bi-globe"></i>
-		</div>
+			<strong>Estilo:</strong> <?php echo $empresa['estilo']; ?> <i class="bi bi-geo-alt"></i>
+			<div class="empresa-item">
+				<strong>Whatsapp:</strong> <?php echo $empresa['whatssap']; ?> <i class="bi bi-whatsapp"></i>
+			</div>
+			<div class="empresa-item">
+				<strong>Instagram:</strong> <?php echo $empresa['instagram']; ?> <i class="bi bi-instagram"></i>
+			</div>
+			<div class="empresa-item">
+				<strong>Facebook:</strong> <?php echo $empresa['facebook']; ?> <i class="bi bi-facebook"></i>
+			</div>
+			<div class="empresa-item">
+				<strong>Página Web:</strong> <?php echo $empresa['pagina_web']; ?> <i class="bi bi-globe"></i>
+			</div>
 
-		<div class="empresa-item">
-			<strong>Logo:</strong>
-			<?php if (!empty($empresa['path_logo'])): ?>
-			<img src="<?php echo htmlspecialchars($empresa['path_logo']); ?>" alt="Logo de la empresa" style="max-width: 200px;">
-			<?php else: ?>
-			<span>No hay logo disponible</span>
-			<?php endif; ?>
-		</div>
-		<div class="empresa-item">
-			<button class="btn btn-sm btn-primary edit-empresa" data-id="<?php echo $empresa['id']; ?>" data-descripcion="<?php echo htmlspecialchars($empresa['descripcion']); ?>" data-activo="<?php echo $empresa['activo']; ?>" data-contacto="<?php echo htmlspecialchars($empresa['contacto']); ?>" data-email="<?php echo htmlspecialchars($empresa['email']); ?>" data-direccion="<?php echo htmlspecialchars($empresa['direccion']); ?>" data-whatssap="<?php echo htmlspecialchars($empresa['whatssap']); ?>" data-instagram="<?php echo htmlspecialchars($empresa['instagram']); ?>" data-facebook="<?php echo htmlspecialchars($empresa['facebook']); ?>" data-pagina_web="<?php echo htmlspecialchars($empresa['pagina_web']); ?>">
-				Haceme un click para modificar los datos <i class="bi bi-pencil"></i>
-			</button>
+			<div class="empresa-item">
+				<strong>Logo:</strong>
+				<?php if (!empty($empresa['path_logo'])): ?>
+				<img src="<?php echo htmlspecialchars($empresa['path_logo']); ?>" alt="Logo de la empresa" style="max-width: 200px;">
+				<?php else: ?>
+				<span>No hay logo disponible</span>
+				<?php endif; ?>
+			</div>
+			<div class="empresa-item">
+				<button class="btn btn-sm btn-primary edit-empresa" data-id="<?php echo $empresa['id']; ?>" data-descripcion="<?php echo htmlspecialchars($empresa['descripcion']); ?>" data-activo="<?php echo $empresa['activo']; ?>" data-contacto="<?php echo htmlspecialchars($empresa['contacto']); ?>" data-email="<?php echo htmlspecialchars($empresa['email']); ?>" data-direccion="<?php echo htmlspecialchars($empresa['direccion']); ?>" data-whatssap="<?php echo htmlspecialchars($empresa['whatssap']); ?>" data-instagram="<?php echo htmlspecialchars($empresa['instagram']); ?>" data-facebook="<?php echo htmlspecialchars($empresa['facebook']); ?>" data-pagina_web="<?php echo htmlspecialchars($empresa['pagina_web']); ?>" data-estilo_id="<?php echo $empresa['estilo_id']; ?>">
+					Haceme un click para modificar los datos <i class="bi bi-pencil"></i>
+				</button>
+			</div>
 		</div>
 	</div>
-</div>
-<?php
+	<?php
 }

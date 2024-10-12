@@ -24,6 +24,17 @@
 						<label for="descripcion">Descripción:</label>
 						<input type="text" class="form-control" id="descripcion" name="descripcion" maxlength="50" required>
 					</div>
+					<div class="empresa-item">
+						<strong>Estilo:</strong>
+						<select id="estiloSelect" class="form-select">
+							<option value="">Seleccione un estilo</option>
+							<?php foreach ($estilos as $estilo): ?>
+							<option value="<?php echo $estilo['id']; ?>" <?php echo $empresa['estilo_id'] == $estilo['id'] ? 'selected' : ''; ?>>
+								<?php echo htmlspecialchars($estilo['descripcion']); ?>
+							</option>
+							<?php endforeach; ?>
+						</select>
+					</div>
 					<div class="form-group">
 						<label for="direccion">Dirección:</label>
 						<input type="text" class="form-control" id="direccion" name="direccion" maxlength="80">

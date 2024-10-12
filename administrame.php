@@ -28,27 +28,41 @@ if ($codigo == "") {
 
 use BD\Database;
 
-$database = new Database();
-$db = $database->getConnection();
-
-if (!$codigo) :
-	echo "No se proporcionó ningún código.";
+try {
+	$database = new Database();
+	$db = $database->getConnection();
+} catch (PDOException $e) {
+	header('Location: error.php');
 	exit;
-endif;
+}
 
+if (empty($codigo)) {
+	header('Location: error.php');
+
+	exit;
+}
 $_SESSION['codigo'] = $codigo;
-$query = "SELECT * FROM empresa WHERE codigoQR = ?";
-$stmt = $db->prepare($query);
-$stmt->execute([$codigo]);
-$empresa = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-if ($empresa):
-	$empresa = $empresa[0];
-	$_SESSION['empresaid'] = $empresa['id'];
-else :
-	echo "No se encontraron resultados para el código: " . htmlspecialchars($codigo);
+try {
+	$empresa = getEmpresa($db, $codigo);
+	if ($empresa) {
+		$empresa = $empresa[0];
+		$_SESSION['empresaid'] = $empresa['id'];
+	} else {
+		echo "No se encontraron resultados ";
+		exit;
+	}
+} catch (Exception $e) {
+	echo "Error al obtener la empresa: " . htmlspecialchars($e->getMessage());
 	exit;
-endif;
+}
+
+$query = "SELECT * FROM estilos WHERE activo='SI'";
+$stmt = $db->prepare($query);
+$stmt->execute();
+$estilos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 
 $query = "SELECT * FROM categorias WHERE empresaid = ? ORDER BY descripcion";
 $stmt = $db->prepare($query);
@@ -67,6 +81,8 @@ $query = "SELECT p.id, p.categoria_id, p.nombre, p.descripcion, p.tamaño, p.pre
 $stmt = $db->prepare($query);
 $stmt->execute([$_SESSION['empresaid']]);
 $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 
 
 // Procesar formularios
@@ -179,7 +195,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
 						<h5 class="card-title mb-0">Empresa</h5>
 					</div>
-					<?php mostrarDataEmpresa($empresa); ?>
+					<?php mostrarDataEmpresa($empresa, $estilos); ?>
 				</div>
 			</div>
 			<!-- Formulario de edición -->
