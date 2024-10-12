@@ -5,7 +5,7 @@ function getEmpresa($db, $codigo)
 		$query = "select e.id
 			,e.descripcion
 			,e.direccion
-			,e.whatssap
+			,e.whatsapp
 			,e.instagram
 			,e.facebook
 			,e.pagina_web
@@ -80,7 +80,7 @@ function editarEmpresa($db, $empresa)
 
 
 		// Actualizar la descripción y otros campos en la base de datos
-		$sql = "UPDATE empresa SET descripcion = :descripcion, contacto = :contacto, email = :email, direccion = :direccion, whatssap = :whatsapp, instagram = :instagram, facebook = :facebook, pagina_web = :pagina_web, estilo_id = :estilo_id  WHERE id = :id";
+		$sql = "UPDATE empresa SET descripcion = :descripcion, contacto = :contacto, email = :email, direccion = :direccion, whatsapp = :whatsapp, instagram = :instagram, facebook = :facebook, pagina_web = :pagina_web, estilo_id = :estilo_id  WHERE id = :id";
 		$stmt = $db->prepare($sql);
 		$stmt->bindparam(":descripcion", $descripcion);
 		$stmt->bindparam(":contacto", $contacto);
@@ -125,53 +125,112 @@ function mostrarDataEmpresa($empresa, $estilos)
 {
 
 ?>
-<div class="card-body">
-	<div class="empresa-info">
-		<div class="empresa-item">
-			<strong>Descripción:</strong> <?php echo $empresa['descripcion']; ?> <i class="bi bi-pencil"></i>
-		</div>
+	<div class="modal-body p-4">
+		<div class="card shadow">
+			<div class="card-body">
+				<form id="edit-form" method="POST" action="administrame.php" enctype="multipart/form-data">
+					<input type="hidden" name="id" id="edit-id" value="<?php echo htmlspecialchars($empresa['id']); ?>">
+					<input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
 
-		<div class="empresa-item">
-			<strong>Activo:</strong> <?php echo $empresa['activo'] ? 'Sí' : 'No'; ?> <i class="bi bi-check-circle"></i>
-		</div>
-		<div class="empresa-item">
-			<strong>Contacto:</strong> <?php echo $empresa['contacto']; ?> <i class="bi bi-person"></i>
-		</div>
-		<div class="empresa-item">
-			<strong>Email:</strong> <?php echo $empresa['email']; ?> <i class="bi bi-envelope"></i>
-		</div>
-		<div class="empresa-item">
-			<strong>Dirección:</strong> <?php echo $empresa['direccion']; ?> <i class="bi bi-geo-alt"></i>
-		</div>
-		<div class="empresa-item">
-			<strong>Estilo:</strong> <?php echo $empresa['estilo']; ?> <i class="bi bi-geo-alt"></i>
-			<div class="empresa-item">
-				<strong>Whatsapp:</strong> <?php echo $empresa['whatssap']; ?> <i class="bi bi-whatsapp"></i>
-			</div>
-			<div class="empresa-item">
-				<strong>Instagram:</strong> <?php echo $empresa['instagram']; ?> <i class="bi bi-instagram"></i>
-			</div>
-			<div class="empresa-item">
-				<strong>Facebook:</strong> <?php echo $empresa['facebook']; ?> <i class="bi bi-facebook"></i>
-			</div>
-			<div class="empresa-item">
-				<strong>Página Web:</strong> <?php echo $empresa['pagina_web']; ?> <i class="bi bi-globe"></i>
-			</div>
+					<div class="mb-3">
+						<label for="contacto" class="form-label">Contacto:</label>
+						<div class="input-group">
+							<span class="input-group-text"><i class="bi bi-person"></i></span>
+							<input type="text" class="form-control" id="contacto" name="contacto" maxlength="150" required value="<?php echo htmlspecialchars($empresa['contacto']); ?>">
+						</div>
+					</div>
 
-			<div class="empresa-item">
-				<strong>Logo:</strong>
-				<?php if (!empty($empresa['path_logo'])): ?>
-				<img src="<?php echo htmlspecialchars($empresa['path_logo']); ?>" alt="Logo de la empresa" style="max-width: 200px;">
-				<?php else: ?>
-				<span>No hay logo disponible</span>
-				<?php endif; ?>
-			</div>
-			<div class="empresa-item">
-				<button class="btn btn-sm btn-primary edit-empresa" data-id="<?php echo $empresa['id']; ?>" data-descripcion="<?php echo htmlspecialchars($empresa['descripcion']); ?>" data-activo="<?php echo $empresa['activo']; ?>" data-contacto="<?php echo htmlspecialchars($empresa['contacto']); ?>" data-email="<?php echo htmlspecialchars($empresa['email']); ?>" data-direccion="<?php echo htmlspecialchars($empresa['direccion']); ?>" data-whatssap="<?php echo htmlspecialchars($empresa['whatssap']); ?>" data-instagram="<?php echo htmlspecialchars($empresa['instagram']); ?>" data-facebook="<?php echo htmlspecialchars($empresa['facebook']); ?>" data-pagina_web="<?php echo htmlspecialchars($empresa['pagina_web']); ?>" data-estilo_id="<?php echo $empresa['estilo_id']; ?>">
-					Haceme un click para modificar los datos <i class="bi bi-pencil"></i>
-				</button>
+					<div class="mb-3">
+						<label for="email" class="form-label">Email:</label>
+						<div class="input-group">
+							<span class="input-group-text"><i class="bi bi-envelope"></i></span>
+							<input type="email" class="form-control" id="email" name="email" maxlength="100" required value="<?php echo htmlspecialchars($empresa['email']); ?>">
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="descripcion" class="form-label">Descripción:</label>
+						<div class="input-group">
+							<span class="input-group-text"><i class="bi bi-card-text"></i></span>
+							<input type="text" class="form-control" id="descripcion" name="descripcion" maxlength="50" required value="<?php echo htmlspecialchars($empresa['descripcion']); ?>">
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="estiloSelect" class="form-label">Estilo:</label>
+						<div class="input-group">
+							<span class="input-group-text"><i class="bi bi-palette"></i></span>
+							<select id="estiloSelect" name="estilo_id" class="form-select">
+								<option value="">Seleccione un estilo</option>
+								<?php foreach ($estilos as $estilo): ?>
+									<option value="<?php echo htmlspecialchars($estilo['id']); ?>" <?php echo $empresa['estilo_id'] == $estilo['id'] ? 'selected' : ''; ?>>
+										<?php echo htmlspecialchars($estilo['descripcion']); ?>
+									</option>
+								<?php endforeach; ?>
+							</select>
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="direccion" class="form-label">Dirección:</label>
+						<div class="input-group">
+							<span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+							<input type="text" class="form-control" id="direccion" name="direccion" maxlength="80" value="<?php echo htmlspecialchars($empresa['direccion']); ?>">
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="whatsapp" class="form-label">Whatsapp:</label>
+						<div class="input-group">
+							<span class="input-group-text"><i class="bi bi-whatsapp"></i></span>
+							<input type="text" class="form-control" id="whatsapp" name="whatsapp" maxlength="80" value="<?php echo htmlspecialchars($empresa['whatsapp']); ?>">
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="instagram" class="form-label">Instagram:</label>
+						<div class="input-group">
+							<span class="input-group-text"><i class="bi bi-instagram"></i></span>
+							<input type="text" class="form-control" id="instagram" name="instagram" maxlength="80" value="<?php echo htmlspecialchars($empresa['instagram']); ?>">
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="facebook" class="form-label">Facebook:</label>
+						<div class="input-group">
+							<span class="input-group-text"><i class="bi bi-facebook"></i></span>
+							<input type="text" class="form-control" id="facebook" name="facebook" maxlength="80" value="<?php echo htmlspecialchars($empresa['facebook']); ?>">
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="pagina_web" class="form-label">Página Web:</label>
+						<div class="input-group">
+							<span class="input-group-text"><i class="bi bi-globe"></i></span>
+							<input type="text" class="form-control" id="pagina_web" name="pagina_web" maxlength="80" value="<?php echo htmlspecialchars($empresa['pagina_web']); ?>">
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="edit-logo" class="form-label">Logo:</label>
+						<?php if (!empty($empresa['path_logo'])): ?>
+							<div class="mb-3">
+								<img src="<?php echo htmlspecialchars($empresa['path_logo']); ?>" alt="Logo de la empresa" class="img-fluid" style="max-width: 200px;">
+							</div>
+						<?php endif; ?>
+						<div class="input-group">
+							<span class="input-group-text"><i class="bi bi-image"></i></span>
+							<input type="file" class="form-control" id="logo" name="logo" accept="image/*">
+						</div>
+					</div>
+
+					<div class="d-flex justify-content-end">
+						<button type="submit" class="btn btn-primary me-2" name="edit_empresa">Actualizar</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>
-	<?php
+<?php
 }
