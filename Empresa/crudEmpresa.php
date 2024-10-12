@@ -2,7 +2,26 @@
 function getEmpresa($db, $codigo)
 {
 	try {
-		$query = "SELECT * FROM empresa WHERE codigo = ?";
+		$query = "select e.id
+			,e.descripcion
+			,e.direccion
+			,e.whatssap
+			,e.instagram
+			,e.facebook
+			,e.pagina_web
+			,e.path_logo
+			,e.activo
+			,e.codigoQR
+			,e.carpeta_graficos
+			,e.contacto
+			,e.email
+			,e.estilo_id
+			,ifnull(e2.descripcion,'')  as estilo
+			,ifnull(e2.archivo_css,'') as archivo_css
+			,ifnull(e2.archivo_js,'') as archivo_js
+		from empresa e
+		left join estilos e2 on e2.id  = e.estilo_id
+		WHERE e.codigoQR = ?";
 		$stmt = $db->prepare($query);
 		$stmt->execute([$codigo]);
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);

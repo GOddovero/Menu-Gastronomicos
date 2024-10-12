@@ -8,7 +8,7 @@ http://localhost:5500/administrame.php?codigo=benita_cafe
 
 require_once("./Config/config.php");
 require_once("./BD/Database.php");
-require_once("crudEmpresa.php");
+require_once("./Empresa/crudEmpresa.php");
 require_once("crudCategorias.php");
 require_once("crudProductos.php");
 
@@ -49,11 +49,11 @@ try {
 		$empresa = $empresa[0];
 		$_SESSION['empresaid'] = $empresa['id'];
 	} else {
-		echo "No se encontraron resultados ";
+		header('Location: error.php');
 		exit;
 	}
 } catch (Exception $e) {
-	echo "Error al obtener la empresa: " . htmlspecialchars($e->getMessage());
+	header('Location: error.php');
 	exit;
 }
 
@@ -199,7 +199,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				</div>
 			</div>
 			<!-- Formulario de edición -->
-			<?php require_once("form_empresa.php"); ?>
+			<?php require_once("./Empresa/form_empresa.php"); ?>
 			<!-- Tab Categorías -->
 			<div class="tab-pane fade" id="categorias">
 				<div class="card mt-3">

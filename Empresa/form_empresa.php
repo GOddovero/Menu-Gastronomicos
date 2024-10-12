@@ -26,7 +26,7 @@
 					</div>
 					<div class="empresa-item">
 						<strong>Estilo:</strong>
-						<select id="estiloSelect" class="form-select">
+						<select id="estiloSelect" name="estilo_id" class="form-select">
 							<option value="">Seleccione un estilo</option>
 							<?php foreach ($estilos as $estilo): ?>
 							<option value="<?php echo $estilo['id']; ?>" <?php echo $empresa['estilo_id'] == $estilo['id'] ? 'selected' : ''; ?>>
