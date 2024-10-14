@@ -9,8 +9,10 @@ $empresaid = isset($_GET['empresaid']) ? $_GET['empresaid'] : '';
 if ($empresaid) {
 	$database = new Database();
 	$db = $database->getConnection();
-	$query = "SELECT categoria, nombre, descripcion, tamaño, precio, path_imagen
-		FROM menu Where empresaid = :empresaid";
+	$query = "SELECT categorias.descripcion as categoria, nombre, menu.descripcion, tamaño, precio, path_imagen
+				FROM menu
+				inner join categorias on menu.categoria_id = categorias.id
+				Where menu.empresaid = :empresaid";
 
 	$stmt = $db->prepare($query);
 	$stmt->bindParam("empresaid", $empresaid);

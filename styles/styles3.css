@@ -3,7 +3,7 @@ body {
   color: #4a3728;
   font-family: "Crimson Text", serif;
   line-height: 1.8;
-  background-image: url("/api/placeholder/400/400");
+  /*background-image: url("/api/placeholder/400/400");*/
   background-repeat: repeat;
 }
 

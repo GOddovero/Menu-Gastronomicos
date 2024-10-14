@@ -39,15 +39,19 @@ function cargarMenu(categoria, menuData) {
       const card = document.createElement("div");
       card.className = "col";
       card.innerHTML = `
-                <div class="card h-100">
-                    <img src="${item.imagen}" class="card-img-top" alt="${item.nombre}">
-                    <div class="card-body">
-                        <h5 class="card-title">${item.nombre}</h5>
-                        <p class="card-text">${item.descripcion}</p>
-                        <p class="card-text">${item.tamaño}</p>
-                        <p class="card-text price">$${item.precio}</p>
-                    </div>
-                </div>
+               <div class="card h-100">
+    ${
+      item.imagen
+        ? `<img src="${item.imagen}" class="card-img-top" alt="${item.nombre}">`
+        : ""
+    }
+    <div class="card-body">
+        <h5 class="card-title">${item.nombre}</h5>
+        <p class="card-text">${item.descripcion}</p>
+        <p class="card-text">${item.tamaño}</p>
+        <p class="card-text price">$${item.precio}</p>
+    </div>
+</div>
             `;
       categoryContainer.appendChild(card);
     });

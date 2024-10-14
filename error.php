@@ -33,8 +33,12 @@
 </head>
 
 <body>
+	<?php
+	$error_message = isset($_GET['error_message']) ? urldecode($_GET['error_message']) : "Ha ocurrido un error inesperado.";
+	?>
 	<div class="error-container">
 		<h1 class="display-4">¡Oops! Algo salió mal</h1>
+		<p class="lead"><?php echo $error_message; ?>.</p>
 		<p class="lead">Disculpe los inconvenientes, estamos analizando el problema.</p>
 		<img id="errorGif" src="" alt="Error GIF" class="error-gif">
 	</div>
