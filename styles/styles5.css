@@ -1,0 +1,54 @@
+body {
+    background-color: #f8ebe6; /* Color de fondo cálido, crema */
+    color: #4e342e; /* Color del texto marrón oscuro */
+    font-family: 'Kaushan Script', cursive;
+}
+
+.card {
+    background-color: #fff3e0; /* Fondo de tarjeta color crema */
+    border: 1px solid #d7ccc8; /* Borde beige */
+    text-align: center;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.category-btn {
+    background-color: #d7ccc8; /* Botón color beige */
+    color: #4e342e; /* Texto marrón oscuro */
+    border: 1px solid #8d6e63; /* Borde marrón suave */
+    margin: 5px;
+}
+
+.category-btn:hover, .category-btn.active {
+    background-color: #bcaaa4; /* Botón en hover marrón claro */
+    color: #fff; /* Texto blanco */
+}
+
+.card-title {
+    font-size: xx-large;
+}
+
+.card-text {
+    margin: 0;
+}
+
+.price {
+    font-weight: bold;
+    color: #ff7043; /* Color del precio naranja */
+    font-size: xx-large;
+}
+
+.menu-container {
+    margin-bottom: 2rem;
+}
+
+#btn-back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    z-index: 999;
+}
